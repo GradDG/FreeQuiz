@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GuardLens · EU AI Act Compliance Assessment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Syne:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --gc-bg:#0a0f1a;
+  --gc-surface:#111827;
+  --gc-surface2:#1a2235;
+  --gc-border:#1e2d45;
+  --gc-border2:#2a3f5f;
+  --gc-text:#f1f5f9;
+  --gc-muted:#94a3b8;
+  --gc-muted2:#64748b;
+  --gc-teal:#0ea5e9;
+  --gc-teal-dim:#0c4a6e;
+  --gc-teal-glow:rgba(14,165,233,0.15);
+  --gc-red:#ef4444;
+  --gc-red-bg:rgba(239,68,68,0.12);
+  --gc-orange:#f97316;
+  --gc-orange-bg:rgba(249,115,22,0.12);
+  --gc-yellow:#eab308;
+  --gc-yellow-bg:rgba(234,179,8,0.12);
+  --gc-green:#22c55e;
+  --gc-green-bg:rgba(34,197,94,0.12);
+}
+
+html,body{
+  background:var(--gc-bg);
+  color:var(--gc-text);
+  font-family:'Inter',sans-serif;
+  min-height:100vh;
+}
+
+body{
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:2rem 1rem 4rem;
+}
+
+#glq{
+  width:100%;
+  max-width:680px;
+}
+
+.gl-screen{display:none}
+.gl-screen.active{display:block}
+
+.gc-logo-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:2rem;
+}
+
+.gc-logo-mark{
+  width:32px;height:32px;
+  background:var(--gc-teal);
+  border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;
+  font-size:13px;font-weight:700;
+  color:#fff;
+  flex-shrink:0;
+}
+
+.gc-logo-name{
+  font-size:14px;font-weight:500;
+  color:var(--gc-text);
+}
+
+.gc-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  font-size:11px;font-weight:500;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+  color:var(--gc-teal);
+  border:1px solid var(--gc-teal-dim);
+  background:var(--gc-teal-glow);
+  padding:5px 12px;
+  border-radius:999px;
+  margin-bottom:1.5rem;
+}
+
+.gc-badge .dot{
+  width:6px;height:6px;
+  border-radius:50%;
+  background:var(--gc-teal);
+  animation:pulse 2s infinite;
+}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+.gc-hero{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(28px,5vw,44px);
+  font-weight:700;
+  line-height:1.15;
+  color:var(--gc-text);
+  margin-bottom:1rem;
+}
+
+.gc-hero em{
+  font-style:normal;
+  color:var(--gc-teal);
+}
+
+.gc-sub{
+  font-size:15px;
+  color:var(--gc-muted);
+  line-height:1.65;
+  margin-bottom:2rem;
+  max-width:520px;
+}
+
+.gc-chips{
+  display:flex;flex-wrap:wrap;gap:8px;
+  margin-bottom:2.5rem;
+}
+
+.gc-chip{
+  font-size:12px;
+  color:var(--gc-muted);
+  background:var(--gc-surface);
+  border:1px solid var(--gc-border);
+  border-radius:6px;
+  padding:5px 11px;
+}
+
+.gc-cta-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  background:var(--gc-teal);
+  color:#fff;
+  font-family:'Inter',sans-serif;
+  font-size:15px;font-weight:600;
+  padding:13px 26px;
+  border:none;border-radius:8px;cursor:pointer;
+  transition:opacity .15s,transform .1s;
+}
+.gc-cta-btn:hover{opacity:.88}
+.gc-cta-btn:active{transform:scale(.98)}
+.gc-cta-btn svg{transition:transform .2s}
+.gc-cta-btn:hover svg{transform:translateX(3px)}
+
+.gc-note{
+  font-size:12px;color:var(--gc-muted2);
+  margin-top:.75rem;
+}
+
+.gc-progress-wrap{margin-bottom:2rem}
+.gc-progress-meta{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:8px;
+}
+.gc-section-tag{
+  font-size:11px;font-weight:500;
+  letter-spacing:.09em;text-transform:uppercase;
+  color:var(--gc-teal);
+}
+.gc-q-counter{font-size:12px;color:var(--gc-muted2)}
+.gc-progress-bar{
+  height:2px;background:var(--gc-border2);
+  border-radius:99px;overflow:hidden;
+}
+.gc-progress-fill{
+  height:100%;background:var(--gc-teal);
+  border-radius:99px;transition:width .4s ease;
+}
+
+.gc-q-text{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(17px,3vw,22px);font-weight:600;
+  color:var(--gc-text);line-height:1.3;
+  margin-bottom:.5rem;
+}
+.gc-q-hint{
+  font-size:13px;color:var(--gc-muted);
+  line-height:1.5;margin-bottom:1.25rem;
+}
+.gc-multi-hint{
+  font-size:12px;color:var(--gc-muted2);
+  margin-bottom:.75rem;
+}
+
+.gc-options{
+  display:flex;flex-direction:column;gap:8px;
+  margin-bottom:1.75rem;
+}
+
+.gc-opt{
+  display:flex;align-items:flex-start;gap:13px;
+  padding:13px 15px;
+  background:var(--gc-surface);
+  border:1px solid var(--gc-border);
+  border-radius:8px;
+  cursor:pointer;
+  transition:border-color .15s,background .15s;
+  text-align:left;
+  font-family:'Inter',sans-serif;
+  width:100%;color:var(--gc-text);
+}
+.gc-opt:hover:not(.sel){
+  border-color:var(--gc-border2);
+  background:var(--gc-surface2);
+}
+.gc-opt.sel{
+  border-color:var(--gc-teal);
+  background:var(--gc-teal-glow);
+}
+
+.gc-opt-ring{
+  width:18px;height:18px;
+  border-radius:50%;
+  border:1.5px solid var(--gc-border2);
+  flex-shrink:0;margin-top:2px;
+  display:flex;align-items:center;justify-content:center;
+  transition:border-color .15s,background .15s;
+}
+.gc-opt.sel .gc-opt-ring{
+  background:var(--gc-teal);border-color:var(--gc-teal);
+}
+.gc-opt.sel .gc-opt-ring::after{
+  content:'';width:7px;height:7px;
+  border-radius:50%;background:#fff;
+}
+.gc-opt-ring.sq{border-radius:4px}
+.gc-opt.multi.sel .gc-opt-ring::after{
+  content:'';width:9px;height:6px;
+  border:2px solid #fff;border-top:none;border-right:none;
+  transform:rotate(-45deg) translateY(-1px);
+  background:none;border-radius:0;
+}
+
+.gc-opt-label{
+  font-size:14px;font-weight:500;
+  color:var(--gc-text);display:block;margin-bottom:2px;
+}
+.gc-opt-desc{
+  font-size:12px;color:var(--gc-muted);line-height:1.4;
+}
+
+.gc-nav{
+  display:flex;justify-content:space-between;align-items:center;
+}
+
+.gc-btn-back{
+  font-family:'Inter',sans-serif;font-size:13px;
+  color:var(--gc-muted);background:none;
+  border:1px solid var(--gc-border);
+  border-radius:6px;padding:9px 16px;
+  cursor:pointer;transition:border-color .15s,color .15s;
+}
+.gc-btn-back:hover{border-color:var(--gc-border2);color:var(--gc-text)}
+
+.gc-btn-next{
+  font-family:'Inter',sans-serif;font-size:13px;font-weight:600;
+  color:#fff;background:var(--gc-teal);
+  border:none;border-radius:6px;
+  padding:9px 20px;cursor:pointer;
+  display:flex;align-items:center;gap:7px;
+  transition:opacity .15s;margin-left:auto;
+}
+.gc-btn-next:disabled{opacity:.35;cursor:default}
+.gc-btn-next:not(:disabled):hover{opacity:.88}
+
+.gc-loading{text-align:center;padding:5rem 1rem}
+.gc-spinner{
+  width:36px;height:36px;
+  border:2px solid var(--gc-border2);
+  border-top-color:var(--gc-teal);
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+  margin:0 auto 1.5rem;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.gc-loading-text{font-size:14px;color:var(--gc-muted);margin-bottom:.4rem}
+.gc-loading-sub{font-size:12px;color:var(--gc-muted2)}
+
+.gc-result-tier-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:11px;font-weight:600;
+  letter-spacing:.09em;text-transform:uppercase;
+  padding:5px 13px;border-radius:999px;
+  margin-bottom:1rem;
+}
+.gc-result-tier-badge.unacceptable{background:var(--gc-red-bg);color:var(--gc-red);border:1px solid rgba(239,68,68,.3)}
+.gc-result-tier-badge.high{background:var(--gc-orange-bg);color:var(--gc-orange);border:1px solid rgba(249,115,22,.3)}
+.gc-result-tier-badge.limited{background:var(--gc-yellow-bg);color:var(--gc-yellow);border:1px solid rgba(234,179,8,.3)}
+.gc-result-tier-badge.minimal{background:var(--gc-green-bg);color:var(--gc-green);border:1px solid rgba(34,197,94,.3)}
+
+.gc-result-title{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(20px,4vw,30px);font-weight:700;
+  color:var(--gc-text);line-height:1.2;margin-bottom:.75rem;
+}
+.gc-result-summary{
+  font-size:14px;color:var(--gc-muted);
+  line-height:1.65;margin-bottom:2rem;max-width:540px;
+}
+
+.gc-score-row{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:10px;margin-bottom:2rem;
+}
+.gc-score-card{
+  background:var(--gc-surface);
+  border:1px solid var(--gc-border);
+  border-radius:8px;padding:14px;text-align:center;
+}
+.gc-score-num{
+  font-family:'Syne',sans-serif;
+  font-size:26px;font-weight:700;
+  color:var(--gc-teal);display:block;margin-bottom:4px;
+}
+.gc-score-label{font-size:11px;color:var(--gc-muted2)}
+
+.gc-sec-title{
+  font-size:11px;font-weight:600;
+  letter-spacing:.09em;text-transform:uppercase;
+  color:var(--gc-muted2);margin-bottom:.75rem;
+  display:flex;align-items:center;gap:8px;
+}
+.gc-sec-title::after{
+  content:'';flex:1;height:1px;background:var(--gc-border);
+}
+
+.gc-ob-list{display:flex;flex-direction:column;gap:8px;margin-bottom:1.75rem}
+.gc-ob-item{
+  display:flex;align-items:flex-start;gap:11px;
+  padding:11px 13px;
+  background:var(--gc-surface);
+  border:1px solid var(--gc-border);
+  border-radius:8px;
+}
+.gc-art-pill{
+  font-size:10px;font-weight:600;
+  letter-spacing:.06em;text-transform:uppercase;
+  color:var(--gc-teal);
+  background:var(--gc-teal-glow);
+  border:1px solid var(--gc-teal-dim);
+  padding:3px 7px;border-radius:4px;
+  white-space:nowrap;flex-shrink:0;margin-top:1px;
+}
+.gc-ob-text{font-size:13px;color:var(--gc-text);line-height:1.5}
+.gc-ob-text strong{color:var(--gc-text);font-weight:500}
+
+.gc-gap-list{display:flex;flex-direction:column;gap:7px;margin-bottom:1.75rem}
+.gc-gap-item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:10px 13px;
+  background:var(--gc-surface);
+  border-radius:7px;
+  font-size:13px;color:var(--gc-muted);line-height:1.5;
+}
+.gc-gap-item.critical{border-left:2px solid var(--gc-red)}
+.gc-gap-item.warning{border-left:2px solid var(--gc-orange)}
+.gc-gap-item.info{border-left:2px solid var(--gc-teal)}
+
+.gc-step-item{
+  display:flex;align-items:flex-start;gap:11px;
+  padding:10px 13px;
+  background:var(--gc-surface);
+  border:1px solid var(--gc-border);
+  border-radius:7px;
+  font-size:13px;color:var(--gc-muted);line-height:1.5;
+  margin-bottom:7px;
+}
+.gc-step-num{
+  font-size:11px;font-weight:600;
+  color:var(--gc-teal);flex-shrink:0;
+  margin-top:1px;min-width:16px;
+}
+
+.gc-cta-box{
+  background:var(--gc-surface);
+  border:1px solid var(--gc-border);
+  border-radius:10px;padding:1.5rem;margin-top:2.5rem;
+}
+.gc-cta-title{
+  font-family:'Syne',sans-serif;font-size:18px;font-weight:700;
+  color:var(--gc-text);margin-bottom:.4rem;
+}
+.gc-cta-text{
+  font-size:13px;color:var(--gc-muted);
+  line-height:1.55;margin-bottom:1.25rem;
+}
+.gc-cta-link{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--gc-teal);color:#fff;
+  font-family:'Inter',sans-serif;font-size:13px;font-weight:600;
+  padding:10px 18px;border:none;border-radius:6px;
+  cursor:pointer;text-decoration:none;transition:opacity .15s;
+}
+.gc-cta-link:hover{opacity:.88}
+
+.gc-restart{
+  font-family:'Inter',sans-serif;font-size:13px;
+  color:var(--gc-muted2);background:none;border:none;
+  cursor:pointer;margin-top:1.5rem;text-decoration:underline;
+  display:block;
+}
+.gc-restart:hover{color:var(--gc-muted)}
+
+.gc-error{
+  background:var(--gc-red-bg);
+  border:1px solid rgba(239,68,68,.3);
+  border-radius:8px;padding:13px 15px;
+  font-size:13px;color:var(--gc-red);margin-bottom:1.5rem;
+}
+
+@media(max-width:480px){
+  body{padding:1rem .75rem 3rem}
+  .gc-score-row{grid-template-columns:repeat(3,1fr)}
+  .gc-score-num{font-size:20px}
+}
+</style>
+</head>
+<body>
+<div id="glq">
+
+  <div id="screen-intro" class="gl-screen active">
+    <div class="gc-logo-row">
+      <div class="gc-logo-mark">GL</div>
+      <span class="gc-logo-name">GuardLens</span>
+    </div>
+    <div class="gc-badge"><span class="dot"></span>EU AI Act 2024/1689 · Free Assessment</div>
+    <h1 class="gc-hero">Is your AI system<br><em>actually compliant?</em></h1>
+    <p class="gc-sub">Answer 12 targeted questions and get an AI-powered analysis of your EU AI Act risk tier, specific article obligations, and compliance gaps — in under 3 minutes.</p>
+    <div class="gc-chips">
+      <span class="gc-chip">Risk tier classification</span>
+      <span class="gc-chip">Article-level obligations</span>
+      <span class="gc-chip">Gap analysis</span>
+      <span class="gc-chip">AI-powered report</span>
+      <span class="gc-chip">Free · No signup</span>
+    </div>
+    <button class="gc-cta-btn" onclick="startQuiz()">
+      Begin assessment
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 7.5h9M8 3.5l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <p class="gc-note">No data stored · Results generated by AI · Not legal advice</p>
+  </div>
+
+  <div id="screen-question" class="gl-screen">
+    <div class="gc-logo-row">
+      <div class="gc-logo-mark">GL</div>
+      <span class="gc-logo-name">GuardLens</span>
+    </div>
+    <div class="gc-progress-wrap">
+      <div class="gc-progress-meta">
+        <span class="gc-section-tag" id="q-section"></span>
+        <span class="gc-q-counter" id="q-counter"></span>
+      </div>
+      <div class="gc-progress-bar">
+        <div class="gc-progress-fill" id="prog-fill" style="width:0%"></div>
+      </div>
+    </div>
+    <h2 class="gc-q-text" id="q-text"></h2>
+    <p class="gc-q-hint" id="q-hint"></p>
+    <div class="gc-multi-hint" id="q-multi" style="display:none">Select all that apply</div>
+    <div class="gc-options" id="q-opts"></div>
+    <div class="gc-nav">
+      <button class="gc-btn-back" id="btn-back" onclick="goBack()">Back</button>
+      <button class="gc-btn-next" id="btn-next" onclick="goNext()" disabled>
+        Continue
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7 2.5l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="screen-loading" class="gl-screen">
+    <div class="gc-loading">
+      <div class="gc-spinner"></div>
+      <p class="gc-loading-text" id="loading-text">Analysing your responses…</p>
+      <p class="gc-loading-sub">Mapping to EU AI Act articles and obligations</p>
+    </div>
+  </div>
+
+  <div id="screen-result" class="gl-screen">
+    <div class="gc-logo-row">
+      <div class="gc-logo-mark">GL</div>
+      <span class="gc-logo-name">GuardLens · Assessment Report</span>
+    </div>
+    <div id="result-content"></div>
+  </div>
+
+</div>
+
+<script>
+const QUESTIONS=[
+  {id:'use_case',section:'System overview',text:'What best describes the primary use of your AI system?',hint:'Choose the option that most closely matches how your system is deployed.',type:'single',options:[
+    {label:'Hiring, recruitment or workforce decisions',desc:'CV screening, scoring, or candidate ranking',value:'hiring',risk:4},
+    {label:'Credit scoring or financial services',desc:'Loan eligibility, creditworthiness, insurance pricing',value:'credit',risk:4},
+    {label:'Healthcare or medical diagnosis',desc:'Clinical decision support, diagnostics, patient triage',value:'health',risk:4},
+    {label:'Law enforcement or border control',desc:'Facial recognition, predictive policing, biometric surveillance',value:'law',risk:5},
+    {label:'Education or professional certification',desc:'Exam scoring, learning analytics, admission decisions',value:'edu',risk:4},
+    {label:'Customer service, content, or marketing',desc:'Chatbots, recommendation engines, personalisation',value:'marketing',risk:2},
+    {label:'Internal business automation',desc:'Process automation, internal analytics, IT operations',value:'internal',risk:1},
+    {label:'Product or service feature',desc:'AI embedded in a product sold to businesses or consumers',value:'product',risk:3},
+  ]},
+  {id:'deployment',section:'System overview',text:'Where is your AI system deployed or made available?',hint:'This determines whether EU rules apply to you at all.',type:'single',options:[
+    {label:'Inside the EU — to users in EU member states',value:'eu_inside',risk:4},
+    {label:'Outside the EU — but outputs affect EU residents',value:'eu_outside',risk:3},
+    {label:'Entirely outside the EU — no EU users affected',value:'no_eu',risk:0},
+    {label:"Unsure — haven't assessed geographic scope",value:'unsure',risk:2},
+  ]},
+  {id:'role',section:'Your obligations',text:"What is your organisation's role in the AI supply chain?",hint:'The AI Act distinguishes providers (who develop/deploy) from deployers (who use third-party AI). Your obligations differ significantly.',type:'single',options:[
+    {label:'Provider — we build and/or place the AI system on the market',value:'provider',risk:4},
+    {label:'Deployer — we use a third-party AI system in our organisation',value:'deployer',risk:2},
+    {label:'Both — we develop AI and also deploy third-party AI systems',value:'both',risk:5},
+    {label:'Importer or distributor of an AI system from outside the EU',value:'importer',risk:3},
+  ]},
+  {id:'decision_impact',section:'Risk indicators',text:"Does your AI system make or influence decisions that directly affect people's rights, opportunities, or wellbeing?",hint:"Examples: access to services, employment, housing, credit, healthcare, education, or benefits.",type:'single',options:[
+    {label:'Yes, fully automated — no human reviews the output',value:'auto',risk:5},
+    {label:'Yes, but a human reviews all significant decisions',value:'human_loop',risk:3},
+    {label:'Partially — some decisions are automated, others reviewed',value:'partial',risk:4},
+    {label:'No — purely for internal efficiency or content generation',value:'no',risk:1},
+  ]},
+  {id:'data_types',section:'Risk indicators',text:'What types of data does your AI system process?',hint:'Select all that apply.',type:'multi',options:[
+    {label:'Biometric data',desc:'Facial images, fingerprints, voice, gait',value:'biometric',risk:5},
+    {label:'Health or medical data',desc:'Diagnoses, prescriptions, patient records',value:'health',risk:4},
+    {label:'Financial data',desc:'Bank records, credit history, income',value:'financial',risk:3},
+    {label:'Behavioural or location data',desc:'Web activity, movement, browsing history',value:'behavioural',risk:3},
+    {label:'General text or structured business data',desc:'Documents, emails, product data',value:'general',risk:1},
+    {label:"None — we don't process personal data",desc:'',value:'none',risk:0},
+  ]},
+  {id:'transparency',section:'Compliance readiness',text:'Do users know they are interacting with or being assessed by an AI system?',hint:'Transparency obligations under Article 50 require disclosure in many contexts.',type:'single',options:[
+    {label:'Yes — clearly disclosed at the point of interaction',value:'full',risk:0},
+    {label:'Partially — disclosed in documentation but not at point of use',value:'partial',risk:2},
+    {label:"No — users don't know an AI is involved",value:'none',risk:5},
+    {label:'Not applicable — system is fully internal',value:'na',risk:0},
+  ]},
+  {id:'human_oversight',section:'Compliance readiness',text:'What human oversight mechanisms are in place for your AI system?',hint:'Article 14 requires meaningful human oversight for high-risk systems.',type:'single',options:[
+    {label:'Formal oversight with documented procedures and trained staff',value:'formal',risk:0},
+    {label:'Informal oversight — humans can intervene but no formal process',value:'informal',risk:2},
+    {label:'Override capability exists but is rarely or never used',value:'rarely',risk:4},
+    {label:'No human oversight — fully automated',value:'none',risk:5},
+  ]},
+  {id:'documentation',section:'Compliance readiness',text:'What technical documentation does your organisation currently maintain?',hint:'High-risk AI systems require extensive documentation under Articles 11 and 12.',type:'multi',options:[
+    {label:'Technical specifications and architecture docs',value:'tech',risk:-1},
+    {label:'Training data documentation and data lineage',value:'data',risk:-1},
+    {label:'Risk assessment and conformity records',value:'risk',risk:-2},
+    {label:'Audit logs and monitoring records',value:'audit',risk:-1},
+    {label:'User-facing instructions and notices',value:'user',risk:-1},
+    {label:'None of the above currently in place',value:'none',risk:3},
+  ]},
+  {id:'testing',section:'Compliance readiness',text:'Has your AI system been tested for bias, accuracy, or safety before deployment?',hint:'Testing against representative datasets is required for high-risk systems (Article 9).',type:'single',options:[
+    {label:'Yes — comprehensive testing with documented results',value:'full',risk:0},
+    {label:'Partial — some testing done, not fully documented',value:'partial',risk:2},
+    {label:'Minimal — basic sanity checks only',value:'minimal',risk:3},
+    {label:'No — not yet tested for these factors',value:'none',risk:5},
+  ]},
+  {id:'gpai',section:'Special categories',text:'Does your system use or expose a general-purpose AI (GPAI) model as a core component?',hint:'Examples include GPT-4, Claude, Gemini, Llama, or similar foundation models. GPAI rules took effect August 2024.',type:'single',options:[
+    {label:'Yes — we use a third-party foundation model (via API or self-hosted)',value:'third_party',risk:3},
+    {label:'Yes — we have developed our own foundation model',value:'own',risk:4},
+    {label:'No — rule-based or traditional ML only',value:'no',risk:1},
+    {label:'Unsure',value:'unsure',risk:2},
+  ]},
+  {id:'august_deadline',section:'Timeline',text:"Are you aware that the EU AI Act's high-risk system obligations become enforceable from August 2026?",hint:'Many obligations for high-risk AI, GPAI providers, and deployers apply from this date.',type:'single',options:[
+    {label:'Yes — we have a compliance programme in progress',value:'on_track',risk:0},
+    {label:"Yes — but we haven't started preparations",value:'aware_not_started',risk:3},
+    {label:'No — this is new information for us',value:'unaware',risk:4},
+    {label:"We believe the Act doesn't apply to us",value:'exempt',risk:2},
+  ]},
+  {id:'priority',section:'Next steps',text:'What would be most useful to you right now?',hint:'This helps us tailor the report to what matters to you.',type:'single',options:[
+    {label:'Understanding if my system is high-risk under the Act',value:'classify',risk:0},
+    {label:'A checklist of what I need to do before August 2026',value:'checklist',risk:0},
+    {label:'Help getting leadership buy-in for compliance work',value:'leadership',risk:0},
+    {label:'Technical guidance on documentation and audit trails',value:'technical',risk:0},
+  ]}
+];
+
+let cQ=0,answers={};
+
+function startQuiz(){showScreen('screen-question');renderQ(0)}
+function showScreen(id){document.querySelectorAll('.gl-screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+
+function renderQ(idx){
+  const q=QUESTIONS[idx];cQ=idx;
+  document.getElementById('q-section').textContent=q.section;
+  document.getElementById('q-counter').textContent=(idx+1)+' of '+QUESTIONS.length;
+  document.getElementById('q-text').textContent=q.text;
+  document.getElementById('q-hint').textContent=q.hint;
+  document.getElementById('q-multi').style.display=q.type==='multi'?'block':'none';
+  document.getElementById('prog-fill').style.width=(idx/QUESTIONS.length*100)+'%';
+  document.getElementById('btn-back').style.visibility=idx===0?'hidden':'visible';
+  const existing=answers[q.id];
+  const opts=document.getElementById('q-opts');
+  opts.innerHTML='';
+  q.options.forEach(function(opt){
+    const btn=document.createElement('button');
+    btn.className='gc-opt'+(q.type==='multi'?' multi':'');
+    btn.dataset.value=opt.value;
+    const isSel=q.type==='multi'?(Array.isArray(existing)&&existing.includes(opt.value)):existing===opt.value;
+    if(isSel)btn.classList.add('sel');
+    btn.innerHTML='<div class="gc-opt-ring'+(q.type==='multi'?' sq':'')+'"></div><div><span class="gc-opt-label">'+opt.label+'</span>'+(opt.desc?'<span class="gc-opt-desc">'+opt.desc+'</span>':'')+'</div>';
+    btn.addEventListener('click',function(){selectOpt(q,opt.value,btn)});
+    opts.appendChild(btn);
+  });
+  updateNext(q);
+}
+
+function selectOpt(q,value,btn){
+  if(q.type==='single'){
+    document.querySelectorAll('#q-opts .gc-opt').forEach(function(b){b.classList.remove('sel')});
+    btn.classList.add('sel');answers[q.id]=value;
+  }else{
+    const cur=answers[q.id]||[];
+    if(value==='none'){
+      document.querySelectorAll('#q-opts .gc-opt').forEach(function(b){b.classList.remove('sel')});
+      btn.classList.add('sel');answers[q.id]=['none'];
+    }else{
+      const nb=Array.from(document.querySelectorAll('#q-opts .gc-opt')).find(function(b){return b.dataset.value==='none'});
+      if(nb)nb.classList.remove('sel');
+      const f=cur.filter(function(v){return v!=='none'});
+      if(f.includes(value)){answers[q.id]=f.filter(function(v){return v!==value});btn.classList.remove('sel')}
+      else{answers[q.id]=f.concat([value]);btn.classList.add('sel')}
+    }
+  }
+  updateNext(q);
+}
+
+function updateNext(q){
+  const v=answers[q.id];
+  document.getElementById('btn-next').disabled=!(q.type==='multi'?(Array.isArray(v)&&v.length>0):!!v);
+}
+
+function goNext(){cQ<QUESTIONS.length-1?renderQ(cQ+1):analyseResults()}
+function goBack(){if(cQ>0)renderQ(cQ-1)}
+
+async function analyseResults(){
+  showScreen('screen-loading');
+  const msgs=['Analysing your responses…','Mapping EU AI Act risk tier…','Identifying article obligations…','Generating compliance report…'];
+  let mi=0;
+  const ltEl=document.getElementById('loading-text');
+  const iv=setInterval(function(){mi=(mi+1)%msgs.length;ltEl.textContent=msgs[mi]},1800);
+  const summary=QUESTIONS.map(function(q){
+    const a=answers[q.id];
+    const aa=Array.isArray(a)?a:[a];
+    const labels=aa.map(function(v){const o=q.options.find(function(x){return x.value===v});return o?o.label:v});
+    return q.section+' — '+q.text+'\nAnswer: '+labels.join(', ');
+  }).join('\n\n');
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:'You are a senior EU AI Act compliance expert. Based on a free compliance quiz, generate a concise accurate actionable JSON report.\n\nQuiz answers:\n'+summary+'\n\nReturn ONLY valid JSON (no markdown, no preamble):\n{\n"tier":"unacceptable"|"high"|"limited"|"minimal",\n"tier_label":"short human label e.g. High-Risk System",\n"headline":"one punchy sentence max 15 words",\n"summary":"2-3 sentences explaining risk classification referencing the AI Act specifically",\n"readiness_score":0-100,\n"obligations":[{"article":"Art. XX","title":"short title","description":"one sentence specific to their situation"}],\n"gaps":[{"gap":"specific compliance gap based on their answers","severity":"critical"|"warning"|"info"}],\n"next_steps":["3-4 concrete prioritised actions"]\n}\nRules: 4-6 obligations mapped to real articles (9,10,11,12,13,14,17,50,52,53,55 etc). 3-5 gaps. August 2026 deadline is relevant. Readiness score honest (most early-stage 15-40).'}]
+      })
+    });
+    clearInterval(iv);
+    const data=await r.json();
+    const raw=data.content.map(function(c){return c.text||''}).join('');
+    const result=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    renderResult(result);
+  }catch(e){clearInterval(iv);renderError()}
+}
+
+function renderResult(r){
+  const tierClass={unacceptable:'unacceptable',high:'high',limited:'limited',minimal:'minimal'};
+  const obs=r.obligations.map(function(o){return '<div class="gc-ob-item"><span class="gc-art-pill">'+o.article+'</span><div class="gc-ob-text"><strong>'+o.title+'</strong> — '+o.description+'</div></div>'}).join('');
+  const gaps=r.gaps.map(function(g){return '<div class="gc-gap-item '+(g.severity==='critical'?'critical':g.severity==='warning'?'warning':'info')+'">'+g.gap+'</div>'}).join('');
+  const steps=r.next_steps.map(function(s,i){return '<div class="gc-step-item"><span class="gc-step-num">'+(i+1)+'</span><span>'+s+'</span></div>'}).join('');
+  document.getElementById('result-content').innerHTML=
+    '<div class="gc-result-tier-badge '+(tierClass[r.tier]||'minimal')+'">'+r.tier_label+'</div>'+
+    '<h2 class="gc-result-title">'+r.headline+'</h2>'+
+    '<p class="gc-result-summary">'+r.summary+'</p>'+
+    '<div class="gc-score-row">'+
+      '<div class="gc-score-card"><span class="gc-score-num">'+r.readiness_score+'</span><span class="gc-score-label">Readiness score</span></div>'+
+      '<div class="gc-score-card"><span class="gc-score-num">'+r.obligations.length+'</span><span class="gc-score-label">Obligations mapped</span></div>'+
+      '<div class="gc-score-card"><span class="gc-score-num">'+r.gaps.length+'</span><span class="gc-score-label">Gaps identified</span></div>'+
+    '</div>'+
+    '<div class="gc-sec-title">Article obligations</div>'+
+    '<div class="gc-ob-list">'+obs+'</div>'+
+    '<div class="gc-sec-title">Compliance gaps</div>'+
+    '<div class="gc-gap-list">'+gaps+'</div>'+
+    '<div class="gc-sec-title">Recommended next steps</div>'+
+    steps+
+    '<div class="gc-cta-box">'+
+      '<h3 class="gc-cta-title">Get a full compliance audit</h3>'+
+      '<p class="gc-cta-text">This assessment gives you a starting point. GuardLens provides ongoing monitoring, audit-ready documentation, and real-time gap tracking — built for the August 2026 deadline.</p>'+
+      '<a href="https://guardcompassai.com" class="gc-cta-link" target="_blank">Explore GuardLens <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7 2.5l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>'+
+    '</div>'+
+    '<button class="gc-restart" onclick="restartQuiz()">Retake assessment</button>';
+  showScreen('screen-result');
+}
+
+function renderError(){
+  document.getElementById('result-content').innerHTML='<div class="gc-error">Unable to generate your report right now. Please try again in a moment.</div><button class="gc-restart" onclick="restartQuiz()">Try again</button>';
+  showScreen('screen-result');
+}
+
+function restartQuiz(){answers={};cQ=0;showScreen('screen-intro')}
+</script>
+</body>
+</html>
