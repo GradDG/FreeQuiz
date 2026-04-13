@@ -521,6 +521,42 @@ html::before{
   .gc-wrap{padding:1.75rem 1rem 4rem}
   .gc-hero{font-size:clamp(36px,8vw,52px)}
 }
+
+/* ── download button ── */
+.gc-dl-btn{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--surface);
+  border:1px solid var(--border2);
+  color:var(--muted);
+  font-family:'Inter',sans-serif;font-size:14px;font-weight:600;
+  padding:11px 22px;border-radius:10px;cursor:pointer;
+  transition:border-color .2s,color .2s,background .2s,box-shadow .2s;
+  margin-top:1.25rem;
+}
+.gc-dl-btn:hover{border-color:var(--purple);color:var(--purple);background:rgba(167,139,250,.07);box-shadow:0 4px 20px rgba(167,139,250,.15)}
+
+/* ── print styles ── */
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body{background:#fff!important;color:#111!important}
+  body::before,body::after,html::before{display:none!important}
+  #screen-intro,#screen-question,#screen-loading{display:none!important}
+  #screen-result{display:block!important}
+  .gc-logo-mark{background:#00C499!important;color:#fff!important}
+  .gc-logo-name{color:#111!important}
+  .gc-result-title{color:#111!important}
+  .gc-result-summary,.gc-ob-text,.gc-gap-item,.gc-step-item{color:#333!important}
+  .gc-score-card{border:1px solid #ddd!important;background:#f9f9f9!important}
+  .gc-score-num{color:#00b38a!important}
+  .gc-score-label,.gc-muted2{color:#666!important}
+  .gc-sec-title{color:#888!important}
+  .gc-sec-title::after{background:#ddd!important}
+  .gc-ob-item,.gc-step-item{border:1px solid #e5e5e5!important;background:#fafafa!important}
+  .gc-art-pill{background:#e8f8f4!important;color:#007a5e!important;border-color:#b2e4d8!important}
+  .gc-gap-item{background:#fafafa!important}
+  .gc-cta-box,.gc-dl-btn,.gc-restart{display:none!important}
+  .gc-wrap{max-width:100%!important;padding:1.5rem!important}
+}
 </style>
 </head>
 <body>
@@ -1000,6 +1036,10 @@ function renderResult(r){
       '<p class="gc-cta-text">This assessment gives you a starting point. GuardLens provides ongoing monitoring, audit-ready documentation, and real-time gap tracking — built for the August 2026 deadline.</p>'+
       '<a href="https://guardcompassai.com" class="gc-cta-link" target="_blank">Explore GuardLens <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>'+
     '</div>'+
+    '<button class="gc-dl-btn" onclick="downloadReport()">'+
+      '<svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1v9M4 7l3.5 3.5L11 7M2 13h11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
+      'Download report as PDF'+
+    '</button>'+
     '<button class="gc-restart" onclick="restartQuiz()">Retake assessment</button>';
   showScreen('screen-result');
   setTimeout(()=>{
@@ -1007,6 +1047,13 @@ function renderResult(r){
     countUp(document.getElementById('sc-o'),r.obligations.length,600);
     countUp(document.getElementById('sc-g'),r.gaps.length,600);
   },200);
+}
+
+function downloadReport(){
+  const orig=document.title;
+  document.title='GuardLens-EU-AI-Act-Report';
+  window.print();
+  document.title=orig;
 }
 
 function renderError(){
